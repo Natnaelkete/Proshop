@@ -1,12 +1,11 @@
+import ProductList from '@/components/shared/product/product-list';
 import { Button } from '@/components/ui/button';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Home',
-};
+import sampleData from '@/db/sample-data';
 
 const Homepage = () => {
-  return <Button>What the fuck</Button>;
+  return (
+    <ProductList data={sampleData.products} title='Newest Arrival' limit={4} />
+  );
 };
 
 export default Homepage;
