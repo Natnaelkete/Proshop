@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { APP_DESCRIPTION, APP_NAME, SERVER_URL } from '@/lib/constants';
 import { ThemeProvider } from 'next-themes';
+import Header from '@/components/shared/header';
+import Footer from '@/components/footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,7 +31,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <div className='flex h-screen flex-col'>
+            <Header />
+            <main className='flex-1 wrapper'>{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
