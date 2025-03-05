@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import sampleData from './sample-data';
-import { db } from '.';
+import { db } from './prisma';
 
 async function main() {
   await db.product.deleteMany();

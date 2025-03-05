@@ -1,7 +1,5 @@
 import Image from 'next/image';
 import loader from '@/assets/loader.gif';
-import { Button } from '@/components/ui/button';
-import { resolve } from 'path';
 
 const LoadingPage = () => {
   return (

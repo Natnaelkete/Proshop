@@ -4,7 +4,6 @@ import ProductCard from './product-card';
 const ProductList = ({
   data,
   title,
-  limit,
 }: {
   data: Product[];
   title?: string;

@@ -2,14 +2,15 @@
 
 import { convertToPlainObject } from '../utils';
 import { LATEST_PRODUCTS_LIMIT } from '../constants';
-import { db } from '@/db';
+import { db } from '@/db/prisma';
 
 export const getLatestProduct = async () => {
-  const product = await db.product.findMany({
+  const products = await db.product.findMany({
     take: LATEST_PRODUCTS_LIMIT,
     orderBy: { createdAt: 'desc' },
   });
-  return convertToPlainObject(product);
+
+  return convertToPlainObject(products);
 };
 
 export const getProductBySlug = async (slug: string) => {
