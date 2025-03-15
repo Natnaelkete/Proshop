@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { signUpUser } from '@/lib/actions/user.action';
+import { signUpUser, signUpUserWithGoogle } from '@/lib/actions/user.action';
 import { signUpDefaultValues } from '@/lib/constants';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -76,13 +76,19 @@ const SignUpForm = () => {
           />
         </div>
         <SignUpButton />
+        <div>
+          {/* Use a button with an onClick handler for Google sign-in */}
+          <Button type='button' onClick={() => signUpUserWithGoogle()}>
+            Sign in with Google
+          </Button>
+        </div>
         {data && !data.success && (
           <div className='text-center text-destructive'>{data.message}</div>
         )}
         <div className='text-sm text-center text-muted-foreground'>
           Already have an account?
           <Link href='/sign-in' target='_self' className='link'>
-            Sign Up
+            Sign In
           </Link>
         </div>
       </div>

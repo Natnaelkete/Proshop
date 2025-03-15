@@ -13,45 +13,22 @@ const pool = new Pool({ connectionString });
 // Instantiates the Prisma adapter using the Neon connection pool to handle the connection between Prisma and Neon.
 const adapter = new PrismaNeon(pool);
 
-declare global {
-  var cachedPrisma: PrismaClient;
-}
-
 let prisma;
-if (process.env.NODE_ENV === 'production') {
-  prisma = new PrismaClient({ adapter }).$extends({
-    result: {
-      product: {
-        price: {
-          compute(product) {
-            return product.price.toString();
-          },
+prisma = new PrismaClient({ adapter }).$extends({
+  result: {
+    product: {
+      price: {
+        compute(product) {
+          return product.price.toString();
         },
-        rating: {
-          compute(product) {
-            return product.rating.toString();
-          },
+      },
+      rating: {
+        compute(product) {
+          return product.rating.toString();
         },
       },
     },
-  });
-} else {
-  prisma = new PrismaClient().$extends({
-    result: {
-      product: {
-        price: {
-          compute(product) {
-            return product.price.toString();
-          },
-        },
-        rating: {
-          compute(product) {
-            return product.rating.toString();
-          },
-        },
-      },
-    },
-  });
-}
+  },
+});
 
 export const db = prisma;

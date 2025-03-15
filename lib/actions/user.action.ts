@@ -33,6 +33,10 @@ export async function signOutUser() {
   await signOut();
 }
 
+export async function signUpUserWithGoogle() {
+  await signIn('google');
+}
+
 export async function signUpUser(prevState: unknown, formData: FormData) {
   try {
     const user = SignUpFormSchema.parse({

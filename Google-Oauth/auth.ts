@@ -12,6 +12,10 @@ export const config = {
     signIn: '/sign-in',
     error: '/sign-in',
   },
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,
+  },
   adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
@@ -46,14 +50,10 @@ export const config = {
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: process.env.GOOGLE_CLIENT_ID!, // Add your Google Client ID
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!, // Add your Google Client Secret
     }),
   ],
-  session: {
-    strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60,
-  },
   callbacks: {
     async session({ session, user, trigger, token }: any) {
       session.user.id = token.sub;
