@@ -16,8 +16,8 @@ const AddToCart = ({ item }: { item: CartItem }) => {
   const handleAddToCart = async () => {
     const res = await addItemToCart(item);
 
-    if (!res.success) {
-      toast({ variant: 'destructive', description: res.message });
+    if (!res?.success) {
+      toast({ variant: 'destructive', description: res?.message });
       return;
     }
 
