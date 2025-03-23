@@ -66,7 +66,7 @@ export async function addItemToCart(data: CartItem) {
 
       return { success: true, message: `${product.name} added in cart` };
     } else {
-      // Cheack if items is already in cart
+      // Check if items is already in cart
       const existItem = (cart.items as CartItem[]).find(
         (x) => x.productId === item.productId
       );
@@ -136,4 +136,62 @@ export async function getMyCart() {
     shippingPrice: cart.shippingPrice.toString(),
     taxPrice: cart.taxPrice.toString(),
   });
+}
+
+export async function removeItemFromCart(productId: string) {
+  try {
+    // Check for cart cookie
+    const sessionCartId = (await cookies()).get('sessionCartId')?.value;
+
+    if (!sessionCartId) throw new Error('Cart session not found');
+
+    // Get Product
+    const product = await db.product.findFirst({
+      where: { id: productId },
+    });
+
+    if (!product) throw new Error('Product not found');
+
+    // Get User Cart
+    const cart = await getMyCart();
+
+    if (!cart) throw new Error('Cart not found');
+
+    // Check for item
+    const exist = (cart.items as CartItem[]).find(
+      (x) => x.productId === productId
+    );
+
+    if (!exist) throw new Error('Item not found');
+
+    // Check if only on in qty
+    if (exist.qty === 1) {
+      // Remove from cart
+      cart.items = (cart.items as CartItem[]).filter(
+        (x) => x.productId !== exist.productId
+      );
+    } else {
+      // Decrease qty
+      (cart.items as CartItem[]).find((x) => x.productId === productId)!.qty =
+        exist.qty - 1;
+    }
+
+    // Update cart in db
+    await db.cart.update({
+      where: { id: cart.id },
+      data: {
+        items: cart.items as Prisma.CartUpdateitemsInput[],
+        ...calcPrice(cart.items as CartItem[]),
+      },
+    });
+
+    revalidatePath(`/product/${product.slug}`);
+
+    return {
+      success: true,
+      message: `${product.name} was removed from cart`,
+    };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
 }
