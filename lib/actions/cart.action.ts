@@ -107,7 +107,6 @@ export async function addItemToCart(data: CartItem) {
       };
     }
   } catch (error) {
-    console.log(formatError(error));
     return { success: false, message: formatError(error) };
   }
 }
