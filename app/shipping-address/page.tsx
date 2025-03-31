@@ -4,7 +4,7 @@ import { getUserById } from '@/lib/actions/user.action';
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import ShippingAddressForm from './shipping-address-form';
-import { ShippingAddress } from '@/types';
+import type { ShippingAddress } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Shipping Address',
