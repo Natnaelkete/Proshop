@@ -6,6 +6,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import { compareSync } from 'bcrypt-ts-edge';
 import type { NextAuthConfig } from 'next-auth';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export const config = {
   pages: {
@@ -68,6 +69,7 @@ export const config = {
     },
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
 
         if (user.name === 'NO_NAME') {
@@ -79,6 +81,33 @@ export const config = {
             data: { name: token.name },
           });
         }
+
+        if (trigger === 'signIn' || trigger === 'signUp') {
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get('sessionCartId')?.value;
+
+          if (sessionCartId) {
+            const sessionCart = await db.cart.findFirst({
+              where: { sessionCartId },
+            });
+
+            if (sessionCart) {
+              // Delete current user cart
+              await db.cart.deleteMany({
+                where: { userId: user.id },
+              });
+            }
+            // Assign new cart
+            await db.cart.update({
+              where: { id: sessionCart?.id },
+              data: { userId: user.id },
+            });
+          }
+        }
+      }
+
+      if (session?.user.name && trigger === 'update') {
+        token.name = session.user.name;
       }
       return token;
     },
