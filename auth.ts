@@ -96,12 +96,13 @@ export const config = {
               await db.cart.deleteMany({
                 where: { userId: user.id },
               });
+
+              // Assign new cart
+              await db.cart.update({
+                where: { id: sessionCart?.id },
+                data: { userId: user.id },
+              });
             }
-            // Assign new cart
-            await db.cart.update({
-              where: { id: sessionCart?.id },
-              data: { userId: user.id },
-            });
           }
         }
       }
@@ -112,6 +113,23 @@ export const config = {
       return token;
     },
     authorized({ request, auth }: any) {
+      // Array of regex patterns of paths we want to protect
+      const protectedPaths = [
+        /\/shipping-address/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/admin/,
+        /\/user\/(.*)/, //for example /user/post , /user/likes
+        /\/user\/(.*)/,
+      ];
+
+      // Get pathname from the req URL
+      const { pathname } = request.nextUrl;
+
+      // Check if user is not authenticated accessing a protected path
+      if (!auth && protectedPaths.some((p) => p.test(pathname))) return false;
+
       if (!request.cookies.get('sessionCartId')) {
         // Generate new session cart id cookie
         const sessionCartId = crypto.randomUUID();
