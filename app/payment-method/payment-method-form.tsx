@@ -4,7 +4,7 @@ import { DEFAULT_PAYMENT_METHOD, PAYMENT_METHODS } from '@/lib/constants';
 import { paymentMethodSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTransition } from 'react';
-import { ControllerRenderProps, SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
   Form,
@@ -14,13 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { updateUserPaymentMethod } from '@/lib/actions/user.action';
-import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
 
 const PaymentMethodForm = ({
   preferredPaymentMethod,
@@ -42,16 +41,20 @@ const PaymentMethodForm = ({
   ) => {
     startTransition(async () => {
       const res = await updateUserPaymentMethod(values);
+      console.log(res);
 
       if (!res.success) {
-        toast: ({
+        toast({
           variant: 'destructive',
           description: res.message,
         });
         return;
       }
 
+      console.log('Res Ended Here');
+
       router.push('/place-order');
+      console.log('Also Here');
     });
   };
 
