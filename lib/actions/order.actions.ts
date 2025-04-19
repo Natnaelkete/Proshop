@@ -1,7 +1,7 @@
-'use sever';
+'use server';
 
 import { isRedirectError } from 'next/dist/client/components/redirect';
-import { formatError } from '../utils';
+import { convertToPlainObject, formatError } from '../utils';
 import { getMyCart } from './cart.action';
 import { getUserById } from './user.action';
 import { auth } from '@/auth';
@@ -92,4 +92,17 @@ export async function createOrder() {
     if (isRedirectError(error)) throw error;
     return { success: false, message: formatError(error) };
   }
+}
+
+// Get order by id
+export async function getOrderById(orderId: string) {
+  const data = await db.order.findFirst({
+    where: { id: orderId },
+    include: {
+      Orderitems: true,
+      user: { select: { name: true, email: true } },
+    },
+  });
+
+  return convertToPlainObject(data);
 }
